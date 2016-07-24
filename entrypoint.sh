@@ -2,7 +2,7 @@
 
 sed -i 's/#tcp_nopush/tcp_nodelay/g' /etc/nginx/nginx.conf
 sed -i 's/\"$http_x_forwarded_for\"/\"$http_x_forwarded_for\" \"$sent_http_x_request_id\" \"$http_x_request_id\"/' /etc/nginx/nginx.conf
-rm /etc/nginx/conf.d/default.conf
+rm /etc/nginx/conf.d/default.conf || true
 
 vars=`set | grep _DOCKER_`
 vars=$(echo $vars | tr "\n")
