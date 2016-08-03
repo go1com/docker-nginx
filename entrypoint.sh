@@ -15,4 +15,10 @@ do
     sed -i "/fastcgi_param SERVER_NAME \$host;/a fastcgi_param $key \"$val\";" /etc/nginx/conf.d/app.conf
 done
 
+for key in `env | awk -F "=" '{print $1}'`
+do
+    eval val=\$$key
+    sed -i "/fastcgi_param SERVER_NAME \$host;/a fastcgi_param $key \"$val\";" /etc/nginx/conf.d/app.conf
+done
+
 nginx -g "daemon off;"
