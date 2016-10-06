@@ -30,8 +30,11 @@ function service_nodes(hostname)
             return upstream
         else
             local nodes = json.decode(res.body)
-            node = math.random(1, #nodes)
-            upstream = nodes[node]["Address"] .. ":" .. nodes[node]["ServicePort"]
+            if #nodes > 0 then
+                math.randomseed(os.time())
+                node = math.random(#nodes)
+                upstream = nodes[node]["Address"] .. ":" .. nodes[node]["ServicePort"]
+            end
         end
         return upstream
     else
