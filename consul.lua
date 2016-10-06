@@ -7,7 +7,7 @@ function service_nodes(hostname)
     local json = require "cjson"
     local hc = http:new()
 
-    local upstream = ""
+    local upstream = "127.0.0.1:8080"
 
     if string.find(hostname, ".go1.service") then
         local service, env = string.match(hostname, '([%a%w-_]+).([%a%w-_]+)')
@@ -22,19 +22,20 @@ function service_nodes(hostname)
             consul = "127.0.0.1:8500"
         end
 
-        local ok, code, headers, status, body = hc:request {
-            url = "http://".. consul .. "/v1/catalog/service/" .. service .. "?tag=" .. env,
+        local res, err = hc:request_uri("http://" .. consul .. "/v1/catalog/service/" .. service .. "?tag=" .. env, {
             method = "GET"
-        }
+        })
 
-        if body then
-            local nodes = json.decode(body)
+        if not res then
+            return upstream
+        else
+            local nodes = json.decode(res.body)
             node = math.random(1, #nodes)
             upstream = nodes[node]["Address"] .. ":" .. nodes[node]["ServicePort"]
         end
         return upstream
     else
-        return "127.0.0.1:8080"
+        return upstream
     end
 
 end
