@@ -1,9 +1,0 @@
-deploy:master:
-  environment: testing
-  script:
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.code.go1.com.au
-    - docker build -t registry.code.go1.com.au/go1/nginx-lua:${CI_BUILD_REF_NAME} .
-    - docker push registry.code.go1.com.au/go1/nginx-lua:${CI_BUILD_REF_NAME}
-  type: deploy
-  tags: ["deploy", "docker"]
-  only: ["master"]
