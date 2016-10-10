@@ -1,9 +1,0 @@
-version: "2"
-services:
-  nginx-lua:
-    image: registry.code.go1.com.au/go1/nginx-lua:${CI_BUILD_REF_NAME}
-    cpu_shares: ${CPU}
-    mem_limit: ${MEM}
-    ports: ["80"]
-    environment:
-      - CONSUL_CONNECT

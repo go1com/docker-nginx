@@ -1,34 +1,9 @@
-before_script:
-  - MEM=`numfmt --from=iec ${MEM}`
-
 deploy:master:
   environment: testing
-  variables:
-    CPU: "16"
-    MEM: "32M"
-    CONSUL_CONNECT: "172.17.0.1:8500"
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.code.go1.com.au
     - docker build -t registry.code.go1.com.au/go1/nginx-lua:${CI_BUILD_REF_NAME} .
     - docker push registry.code.go1.com.au/go1/nginx-lua:${CI_BUILD_REF_NAME}
-    - ecs-cli configure --region ${AWS_DEFAULT_REGION} --access-key ${AWS_ACCESS_KEY_ID} --secret-key ${AWS_SECRET_ACCESS_KEY} --cluster staging
-    - ecs-cli compose --file docker-compose.yml --project-name nginx-lua service up
   type: deploy
   tags: ["deploy", "docker"]
   only: ["master"]
-
-deploy:production:
-  environment: production
-  variables:
-    CPU: "32"
-    MEM: "32M"
-    CONSUL_CONNECT: "172.17.0.1:8500"
-  script:
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.code.go1.com.au
-    - docker build -t registry.code.go1.com.au/go1/nginx-lua:${CI_BUILD_REF_NAME} .
-    - docker push registry.code.go1.com.au/go1/nginx-lua:${CI_BUILD_REF_NAME}
-    - ecs-cli configure --region ${AWS_DEFAULT_REGION} --access-key ${AWS_ACCESS_KEY_ID} --secret-key ${AWS_SECRET_ACCESS_KEY} --cluster production
-    - ecs-cli compose --file docker-compose.yml --project-name nginx-lua service up
-  type: deploy
-  tags: ["deploy", "docker"]
-  only: ["production"]
